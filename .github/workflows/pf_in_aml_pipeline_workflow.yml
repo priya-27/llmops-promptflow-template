@@ -67,8 +67,8 @@ jobs:
             script_parameter: |
                 python llmops/common/promptflow_in_aml_pipeline.py \
                 --subscription_id ${{ steps.subscription_details.outputs.SUBSCRIPTION_ID }} \
-                --env_name ${{ inputs.env_name }} \
+                --env_name ${{ inputs.env_name || 'dev'}} \
                 --data_purpose=training_data \
-                --compute_target= ${{ inputs.compute_target }} 
+                --compute_target= ${{ inputs.compute_target || 'llmops-pf-cluster'}} 
                 --flow_to_execute ${{ inputs.flow_type }}
                 --build_id=build1
