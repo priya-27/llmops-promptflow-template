@@ -65,7 +65,7 @@ jobs:
         with:
             step_name: "Register experiment data asset"
             script_parameter: |
-                python llmops.common.promptflow_in_aml_pipeline.py \
+                python llmops/common/promptflow_in_aml_pipeline.py \
                 --subscription_id ${{ steps.subscription_details.outputs.SUBSCRIPTION_ID }} \
                 --env_name ${{ inputs.env_name }} \
                 --data_purpose=training_data \
