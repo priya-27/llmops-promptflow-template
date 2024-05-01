@@ -93,7 +93,7 @@ def build_pipeline(pipeline_name: str, flow_path: str, input_data_path: str):
             "output_data_path": Output(type="uri_folder", mode="rw_mount"),
         },
         # The source folder of the component
-        code="../llmops/commom/components/",
+        code="/llmops/commom/components/",
         command="""python preprocess.py \
                 --input_data_path "${{inputs.input_data_path}}" \
                 --max_records "${{inputs.max_records}}" \
@@ -104,7 +104,9 @@ def build_pipeline(pipeline_name: str, flow_path: str, input_data_path: str):
     # This step loads the promptflow in the pipeline as a component
     evaluation_promptflow_component = load_component(
         flow_path,
-    )
+    )  
+    temp = os.listdir()
+    print(temp)
     postprocess_component = command(
         name="postprocess",
         display_name="Post processing for Promptflow in a pipeline experiment",
@@ -113,12 +115,13 @@ def build_pipeline(pipeline_name: str, flow_path: str, input_data_path: str):
             "input_data_path": Input(type="uri_folder", mode="rw_mount"),
         },
         # The source folder of the component
-        code="../llmops/commom/components/",
+        code="/llmops/commom/components/",
         command="""python postprocess.py  \
                 --input_data_path "${{inputs.input_data_path}}" \
                 """,
         environment="azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu:1",
     )
+    
     pipeline_components.append(preprocess_component)
     pipeline_components.append(evaluation_promptflow_component)
     pipeline_components.append(postprocess_component)
