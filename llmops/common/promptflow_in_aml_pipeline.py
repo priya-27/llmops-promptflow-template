@@ -93,7 +93,7 @@ def build_pipeline(pipeline_name: str, flow_path: str, input_data_path: str):
             "output_data_path": Output(type="uri_folder", mode="rw_mount"),
         },
         # The source folder of the component
-        code="llmops/commom/components/",
+        code="llmops/common/components/",
         command="""python preprocess.py \
                 --input_data_path "${{inputs.input_data_path}}" \
                 --max_records "${{inputs.max_records}}" \
@@ -115,7 +115,7 @@ def build_pipeline(pipeline_name: str, flow_path: str, input_data_path: str):
             "input_data_path": Input(type="uri_folder", mode="rw_mount"),
         },
         # The source folder of the component
-        code="llmops/commom/components/",
+        code="llmops/common/components/",
         command="""python postprocess.py  \
                 --input_data_path "${{inputs.input_data_path}}" \
                 """,
