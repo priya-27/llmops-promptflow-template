@@ -43,9 +43,11 @@ def create_dynamic_evaluation_pipeline(
             type=AssetTypes.URI_FILE,
             mode=InputOutputModes.RO_MOUNT,
         )
+        print("PRint  preprocess input path",pf_input_path)
         preprocess_output_path = Output(
             path=AML_DATASTORE_PATH_PREFIX, type=AssetTypes.URI_FOLDER, mode="rw_mount"
         )
+        print("PRint Preprocess output path",preprocess_output_path)
         preprocess = pipeline_components[0](
             input_data_path=pf_input_path, max_records=2
         )
@@ -81,6 +83,8 @@ def build_pipeline(pipeline_name: str, flow_path: str, input_data_path: str):
     Returns:
         PipelineJob: Azure Machine Learning pipeline job.
     """
+    
+    print("In build pipeline method")
     preprocess_component = command(
         name="preprocess",
         display_name="Data preparation for Promptflow in a pipeline experiment",
@@ -101,10 +105,13 @@ def build_pipeline(pipeline_name: str, flow_path: str, input_data_path: str):
                 """,
         environment="azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu:1",  # TODO FIXME
     )
+    
+    print("Preprocess component loaded")
     # This step loads the promptflow in the pipeline as a component
     evaluation_promptflow_component = load_component(
         flow_path,
-    )  
+    )
+    print("Promptflow component loaded")
     temp = os.listdir()
     print(temp)
     postprocess_component = command(
@@ -121,10 +128,12 @@ def build_pipeline(pipeline_name: str, flow_path: str, input_data_path: str):
                 """,
         environment="azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu:1",
     )
+    print("Postprocess component loaded")
     
     pipeline_components.append(preprocess_component)
     pipeline_components.append(evaluation_promptflow_component)
     pipeline_components.append(postprocess_component)
+    print("Ready to Create pipeline!")
 
     pipeline_definition = create_dynamic_evaluation_pipeline(
         pipeline_name=pipeline_name,
@@ -148,6 +157,7 @@ def prepare_and_execute(
     Returns:
         None
     """
+    print("In Prepare and Execute Method")
     main_config = open(f"{flow_to_execute}/llmops_config.json")
     model_config = json.load(main_config)
 
