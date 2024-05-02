@@ -13,10 +13,6 @@ on:
         description: "The flow use-case to execute"
         required: true
         default: "web_classification"
-      deployment_type:
-        type: string
-        description: "Determine type of deployment - aml, aks, docker, webapp"
-        required: true
       compute_target:
         type: string
         description: "Azure ML studio Compute target "
@@ -37,10 +33,6 @@ on:
         description: "The flow use-case to execute"
         required: true
         default: "web_classification"
-      deployment_type:
-        type: string
-        description: "Determine type of deployment - aml, aks, docker, webapp"
-        required: true
       compute_target:
         type: string
         description: "Azure ML studio Compute target "
@@ -80,10 +72,14 @@ jobs:
         # Registers experiment dataset in Azure ML as Data Asset
         # Reads appropriate field values from data_config.json based on environment and data purpose
         #=====================================      
-      - name: Register experiment data asset
+      - name: Run Promptflow in AML pipeline
         uses: ./.github/actions/execute_script
         with:
-            step_name: "Register experiment data asset"
+            step_name: "Run Promptflow in AML Pipeline"
+            env_name: ${{ inputs.env_name }}
+            flow_type: ${{ inputs.flow_type }}
+            compute_target: ${{ inputs.compute_target }}
+            build_id: ${{ github.run_id }}
             script_parameter: |
                 python llmops/common/promptflow_in_aml_pipeline.py \
                 --subscription_id ${{ steps.subscription_details.outputs.SUBSCRIPTION_ID }} \
