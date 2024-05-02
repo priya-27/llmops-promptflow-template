@@ -13,10 +13,6 @@ on:
         description: "The flow use-case to execute"
         required: true
         default: "web_classification"
-      deployment_type:
-        type: string
-        description: "Determine type of deployment - aml, aks, docker, webapp"
-        required: true
       compute_target:
         type: string
         description: "Azure ML studio Compute target "
@@ -25,6 +21,30 @@ on:
       azure_credentials:
         description: "service principal authentication to Azure"
         required: true
+  workflow_dispatch:
+    inputs:
+      env_name:
+        type: string
+        description: "Execution Environment"
+        required: true
+        default: "dev"
+      flow_type:
+        type: string
+        description: "The flow use-case to execute"
+        required: true
+        default: "web_classification"
+      compute_target:
+        type: string
+        description: "Azure ML studio Compute target "
+        required: true   
+  pull_request:
+    branches:
+      - main
+      - development
+    paths:
+      - '.github/**'
+      - 'llmops/**'
+      - 'web_classification/**'
 jobs:
   flow-experiment-and_evaluation:
     name: prompt flow experiment and evaluation job
@@ -52,15 +72,19 @@ jobs:
         # Registers experiment dataset in Azure ML as Data Asset
         # Reads appropriate field values from data_config.json based on environment and data purpose
         #=====================================      
-      - name: Register experiment data asset
+      - name: Run Promptflow in AML pipeline
         uses: ./.github/actions/execute_script
         with:
-            step_name: "Register experiment data asset"
+            step_name: "Run Promptflow in AML Pipeline"
+            env_name: ${{ inputs.env_name }}
+            flow_type: ${{ inputs.flow_type }}
+            compute_target: ${{ inputs.compute_target }}
+            build_id: ${{ github.run_id }}
             script_parameter: |
-                python llmops.common.promptflow_in_aml_pipeline.py \
+                python llmops/common/promptflow_in_aml_pipeline.py \
                 --subscription_id ${{ steps.subscription_details.outputs.SUBSCRIPTION_ID }} \
                 --env_name ${{ inputs.env_name }} \
-                --data_purpose=training_data \
-                --compute_target= ${{ inputs.compute_target }} 
-                --flow_to_execute ${{ inputs.flow_type }} 
-                --build_id=build1
+                --data_purpose 'training_data' \
+                --compute_target ${{ inputs.compute_target }} \
+                --flow_to_execute ${{ inputs.flow_type }} \
+                --build_id ${{ inputs.build_id }}
