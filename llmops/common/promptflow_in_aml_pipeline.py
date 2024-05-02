@@ -112,7 +112,7 @@ def build_pipeline(pipeline_name: str, flow_path: str, input_data_path: str):
         display_name="Post processing for Promptflow in a pipeline experiment",
         description="Reads the output of the Promptflow experiment and does some post processing.",
         inputs={
-            "input_data_path": Input(type="uri_folder", mode="rw_mount"),
+            "input_data_path": Input(type="uri_file", mode="rw_mount"),
         },
         # The source folder of the component
         code="llmops/common/components/",
