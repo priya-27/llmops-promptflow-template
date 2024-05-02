@@ -29,7 +29,7 @@ def main():
     print("Maximum records to keep", args.max_records)
 
     input_data_path = args.input_data_path
-    print(os.listdir('args.input_data_path'))
+    print(os.listdir(input_data_path))
     print("Printing the input data path", input_data_path)
     input_data_df = pd.read_json(input_data_path, lines=True)
 
